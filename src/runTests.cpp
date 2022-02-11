@@ -1,6 +1,6 @@
 #include <iostream>  // cout, cin, endl, cerr
 
-#include "../include/binarySearchTree.hpp"
+#include "../include/avlTree.hpp"
 #include "../include/executor.hpp"
 
 int main(int argc, char *argv[]) {
@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Declara a árvore binária e o executor de testes
-    bst::BinarySearchTree<int, int> tree;
+    tree::Avl<int, int> tree;
     Executor<int, int> executor(tree);
 
     // Inicia a execução

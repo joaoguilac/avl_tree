@@ -1,6 +1,6 @@
-# Implementação de uma Árvore Binária de Busca (ABB)
+# Implementação de uma Árvore AVL
 
-Neste projeto foi implementado uma estrutura de dados do tipo **Árvore Binária de Busca (ABB)**.
+Neste projeto foi implementado uma estrutura de dados do tipo **Árvore Adel’son Vel’skii e Landis (AVL)**.
 
 Além das três operações básicas de inserção, remoção e busca, a árvore deveria possuir mais seis métodos para tornar a estrutura mais completa.
 
@@ -37,14 +37,14 @@ Para execução do projeto devem ser passados dois arquivos como argumentos:
 
 - O primeiro, chamado de **arquivo de entrada**, deve ser uma sequência de valores inteiros separados por um espaço, de modo que não tenha espaços ou linhas extras no final e no início do arquivo. Esses valores informados vão ser inseridos sequencialmente na árvore.
   Por exemplo: >51 54 68 57 26 34 85 65 25 84
-- O segundo, chamado de **arquivo de comandos**, contém uma sequência de operações (uma operação por linha) a serem realizadas pelo seu árvore binária de busca.
+- O segundo, chamado de **arquivo de comandos**, contém uma sequência de operações (uma operação por linha) a serem realizadas pelo árvore AVL.
   O arquivo de comando poderá utilizar as operações a seguir:
-  ` ENESIMO N POSICAO M MEDIANA CHEIA COMPLETA IMPRIMA IMPRIMA ORDENADO IMPRIMA HIERARQUICO REMOVA N INSIRA N BUSCA N QUIT `
+  `ENESIMO N POSICAO M MEDIANA CHEIA COMPLETA IMPRIMA IMPRIMA ORDENADO IMPRIMA HIERARQUICO REMOVA N INSIRA N BUSCA N QUIT`
   Sendo 'N' a chave do elemento e 'M' um inteiro.
 
       Adicionamos mais duas formas de impressão da árvore: `IMPRIMA ORDENADO` e `IMPRIMA HIERARQUICO`. Esses métodos não foram requeridos pela docente.
 
-      O `IMPRIMA` mostra a ABB **por nível**, o `IMPRIMA ORDENADO` mostra a ABB de forma ordenada pelo valor do dado (através do percorrimento em **ordem simétrica**) e o `IMPRIMA HIERARQUICO` é a ABB na **representação hierárquica**, por nível, de forma mais visual.
+      O `IMPRIMA` mostra a AVL **por nível**, o `IMPRIMA ORDENADO` mostra a AVL de forma ordenada pelo valor do dado (através do percorrimento em **ordem simétrica**) e o `IMPRIMA HIERARQUICO` é a AVL na **representação hierárquica**, por nível, de forma mais visual.
 
       O `QUIT`, é um comando que também não foi requerido pela docente, mas achamos válido implementá-lo. Ele marca até qual comando você deseja que seja executado os testes. Por exemplo:
       ```sh

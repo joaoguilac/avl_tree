@@ -8,7 +8,7 @@ void verifyIfStringContainsOnlyNumbers(const std::string& str) {
 }
 
 template <typename DataType, typename KeyType>
-Executor<DataType, KeyType>::Executor(bst::BinarySearchTree<DataType, KeyType>& tree) : tree{&tree}, leave{false} {}
+Executor<DataType, KeyType>::Executor(tree::Avl<DataType, KeyType>& tree) : tree{&tree}, leave{false} {}
 
 template <typename DataType, typename KeyType>
 void Executor<DataType, KeyType>::start(std::string insertionFileName, std::string commandFileName) {

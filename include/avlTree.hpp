@@ -1,5 +1,5 @@
-#ifndef _BINARY_SEARCH_TREE_H_
-#define _BINARY_SEARCH_TREE_H_
+#ifndef _AVL_TREE_
+#define _AVL_TREE_
 
 #include <cmath>     // std::pow
 #include <iostream>  // st::cout, std::cin, std::endl
@@ -8,16 +8,16 @@
 #include <string>    // std::string
 #include <vector>    // std::vector
 
-namespace bst {  // binary search tree
+namespace tree {
 
 /**
- * @brief A class representing a binary search tree.
+ * @brief A class representing a avl tree.
  *
  * @tparam DataType Type of data the container will store.
  * @tparam KeyType Type of key the container will store.
  */
 template <typename DataType, typename KeyType>
-class BinarySearchTree {
+class Avl {
    private:
     //=== The data node.
     struct Node {
@@ -49,9 +49,9 @@ class BinarySearchTree {
     Node* freeNode(Node* node);
     // Insert method recursion
     Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted);
-    // Insert method recursion
+    // Remove method recursion
     Node* remove(Node* pointer, KeyConstReference _key, bool& wasRemoved);
-    // Method used to remove a node
+    // Find minimum element
     Node* findMinimumElement(Node* pointer);
     // Search method recursion
     bool search(Node* pointer, KeyConstReference _key);
@@ -61,22 +61,28 @@ class BinarySearchTree {
     int simetric(Node* source, KeyConstReference key, int& iteration, bool& var_controle);
     // Route in symmetrical order to calculate the median
     void simetricToMedian(Node* node, std::vector<Node*>& dados);
-    // Useful methods for the isComplete and isFull methods
+    // Auxiliar method for the isComplete method
     int nodesOnLevel(Node* _pt, int current_level, int level);
+    // Returns height of tree
     int get_height(Node* _pt);
     // Methods for the various ways of printing the tree (toString)
     void toStringPerLevel(Node* pointer, std::stringstream& ss);
     void toStringSorted(Node* pointer, std::stringstream& ss);
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
+    // Rotation methods
+    void rightRotate();
+    void leftRotate();
+    void doubleRightRotate();
+    void doubleLeftRotate();
 
    public:
     //=== Public interface
 
     //=== Constructors and Destructors
-    BinarySearchTree(void);
-    BinarySearchTree(DataConstReference _data, KeyConstReference _key);
-    ~BinarySearchTree(void);
+    Avl(void);
+    Avl(DataConstReference _data, KeyConstReference _key);
+    ~Avl(void);
 
     //=== Modifiers Methods
     void insert(DataConstReference _data, KeyConstReference _key);
@@ -89,10 +95,12 @@ class BinarySearchTree {
     DataType median(void);
     bool isComplete(void);
     bool isFull(void);
+
+    //=== Printing Method
     std::string toString(std::string type);
 };
 
-}  // namespace bst
+}  // namespace tree
 
-#include "binarySearchTree.inl"
-#endif  // _BINARY_SEARCH_TREE_H_
+#include "avlTree.inl"
+#endif  // _AVL_TREE_

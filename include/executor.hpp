@@ -8,7 +8,7 @@
 #include <sstream>   // std::stringstream
 #include <string>    // std::string
 
-#include "binarySearchTree.hpp"
+#include "avlTree.hpp"
 
 /**
  * @brief A class to execute tests for a binary search tree.
@@ -20,7 +20,7 @@ template <typename DataType, typename KeyType>
 class Executor {
     //=== Private members.
    private:
-    bst::BinarySearchTree<DataType, KeyType>* tree;
+    tree::Avl<DataType, KeyType>* tree;
     bool leave = false;
 
     //=== Private methods.
@@ -31,7 +31,7 @@ class Executor {
 
     //=== Public methods.
    public:
-    Executor(bst::BinarySearchTree<DataType, KeyType>& tree);
+    Executor(tree::Avl<DataType, KeyType>& tree);
     void start(std::string insertionFileName, std::string commandFileName);
 };
 

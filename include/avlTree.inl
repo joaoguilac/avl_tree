@@ -1,22 +1,21 @@
-#include "binarySearchTree.hpp"
+#include "avlTree.hpp"
 
-namespace bst {
+namespace tree {
 
 /*****************************************************************************
  * Constructors and Destructors
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-BinarySearchTree<DataType, KeyType>::BinarySearchTree(void) : raw_pointer{nullptr}, height{0}, number_of_nodes{0} {}
+Avl<DataType, KeyType>::Avl(void) : raw_pointer{nullptr}, height{0}, number_of_nodes{0} {}
 
 template <typename DataType, typename KeyType>
-BinarySearchTree<DataType, KeyType>::BinarySearchTree(DataConstReference _data, KeyConstReference _key)
-    : BinarySearchTree() {
+Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key) : Avl() {
     raw_pointer = new Node(_data, _key);
 }
 
 template <typename DataType, typename KeyType>
-typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, KeyType>::freeNode(Node* node) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::freeNode(Node* node) {
     if (node == nullptr) return nullptr;
 
     node->left = freeNode(node->left);
@@ -27,7 +26,7 @@ typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, K
 }
 
 template <typename DataType, typename KeyType>
-BinarySearchTree<DataType, KeyType>::~BinarySearchTree(void) {
+Avl<DataType, KeyType>::~Avl(void) {
     raw_pointer = freeNode(raw_pointer);
 }
 
@@ -36,7 +35,7 @@ BinarySearchTree<DataType, KeyType>::~BinarySearchTree(void) {
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::insert(DataConstReference _data, KeyConstReference _key) {
+void Avl<DataType, KeyType>::insert(DataConstReference _data, KeyConstReference _key) {
     bool wasInserted = false;
     raw_pointer = insert(raw_pointer, _data, _key, wasInserted);
 
@@ -47,8 +46,8 @@ void BinarySearchTree<DataType, KeyType>::insert(DataConstReference _data, KeyCo
 }
 
 template <typename DataType, typename KeyType>
-typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, KeyType>::insert(
-    Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* pointer, DataConstReference _data,
+                                                                      KeyConstReference _key, bool& wasInserted) {
     if (pointer == nullptr) {
         pointer = new Node(_data, _key);
         pointer->left = pointer->right = nullptr;
@@ -62,8 +61,7 @@ typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, K
 }
 
 template <typename DataType, typename KeyType>
-typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, KeyType>::findMinimumElement(
-    Node* pointer) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::findMinimumElement(Node* pointer) {
     if (pointer == nullptr)
         return nullptr;
     else if (pointer->left == nullptr)
@@ -73,7 +71,7 @@ typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, K
 }
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::remove(KeyConstReference _key) {
+void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
     bool wasRemoved = false;
     raw_pointer = remove(raw_pointer, _key, wasRemoved);
     if (wasRemoved) {
@@ -83,9 +81,8 @@ void BinarySearchTree<DataType, KeyType>::remove(KeyConstReference _key) {
 }
 
 template <typename DataType, typename KeyType>
-typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, KeyType>::remove(Node* pointer,
-                                                                                                KeyConstReference _key,
-                                                                                                bool& wasRemoved) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::remove(Node* pointer, KeyConstReference _key,
+                                                                      bool& wasRemoved) {
     Node* nodeTemp;
     if (pointer == nullptr) return nullptr;
     if (_key < pointer->key)
@@ -111,12 +108,12 @@ typename BinarySearchTree<DataType, KeyType>::Node* BinarySearchTree<DataType, K
 }
 
 template <typename DataType, typename KeyType>
-bool BinarySearchTree<DataType, KeyType>::search(KeyConstReference _key) {
+bool Avl<DataType, KeyType>::search(KeyConstReference _key) {
     return search(raw_pointer, _key);
 }
 
 template <typename DataType, typename KeyType>
-bool BinarySearchTree<DataType, KeyType>::search(Node* pointer, KeyConstReference _key) {
+bool Avl<DataType, KeyType>::search(Node* pointer, KeyConstReference _key) {
     if (pointer == nullptr) return false;
 
     if (_key < pointer->key) return search(pointer->left, _key);
@@ -131,8 +128,8 @@ bool BinarySearchTree<DataType, KeyType>::search(Node* pointer, KeyConstReferenc
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-int BinarySearchTree<DataType, KeyType>::simetricToElement(Node* source, int& iteration, int position,
-                                                           bool& var_controle, KeyReference element) {
+int Avl<DataType, KeyType>::simetricToElement(Node* source, int& iteration, int position, bool& var_controle,
+                                              KeyReference element) {
     if (source != nullptr) {
         this->simetricToElement(source->left, iteration, position, var_controle, element);
 
@@ -153,7 +150,7 @@ int BinarySearchTree<DataType, KeyType>::simetricToElement(Node* source, int& it
 }
 
 template <typename DataType, typename KeyType>
-DataType BinarySearchTree<DataType, KeyType>::elementInPosition(int position) {
+DataType Avl<DataType, KeyType>::elementInPosition(int position) {
     if (position > number_of_nodes) return -1;
 
     int iterator = 1;
@@ -164,8 +161,7 @@ DataType BinarySearchTree<DataType, KeyType>::elementInPosition(int position) {
 }
 
 template <typename DataType, typename KeyType>
-int BinarySearchTree<DataType, KeyType>::simetric(Node* source, KeyConstReference _key, int& iteration,
-                                                  bool& var_controle) {
+int Avl<DataType, KeyType>::simetric(Node* source, KeyConstReference _key, int& iteration, bool& var_controle) {
     if (source != nullptr) {
         this->simetric(source->left, _key, iteration, var_controle);
 
@@ -183,7 +179,7 @@ int BinarySearchTree<DataType, KeyType>::simetric(Node* source, KeyConstReferenc
 }
 
 template <typename DataType, typename KeyType>
-int BinarySearchTree<DataType, KeyType>::findPositionOfElement(KeyConstReference _key) {
+int Avl<DataType, KeyType>::findPositionOfElement(KeyConstReference _key) {
     int position = 1;
     bool var_controle = false;
 
@@ -197,7 +193,7 @@ int BinarySearchTree<DataType, KeyType>::findPositionOfElement(KeyConstReference
 }
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::simetricToMedian(Node* node, std::vector<Node*>& dados) {
+void Avl<DataType, KeyType>::simetricToMedian(Node* node, std::vector<Node*>& dados) {
     if (node != nullptr) {
         this->simetricToMedian(node->left, dados);
         dados.push_back(node);
@@ -206,7 +202,7 @@ void BinarySearchTree<DataType, KeyType>::simetricToMedian(Node* node, std::vect
 }
 
 template <typename DataType, typename KeyType>
-DataType BinarySearchTree<DataType, KeyType>::median(void) {
+DataType Avl<DataType, KeyType>::median(void) {
     // Retrieve all ABB elements by pre-order
     std::vector<Node*> elements;
     simetricToMedian(raw_pointer, elements);
@@ -225,7 +221,7 @@ DataType BinarySearchTree<DataType, KeyType>::median(void) {
 }
 
 template <typename DataType, typename KeyType>
-int BinarySearchTree<DataType, KeyType>::nodesOnLevel(Node* _pt, int current_level, int level) {
+int Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, int current_level, int level) {
     if (current_level == level) {
         return (_pt == nullptr) ? 0 : 1;
     }
@@ -236,7 +232,7 @@ int BinarySearchTree<DataType, KeyType>::nodesOnLevel(Node* _pt, int current_lev
 }
 
 template <typename DataType, typename KeyType>
-bool BinarySearchTree<DataType, KeyType>::isComplete(void) {
+bool Avl<DataType, KeyType>::isComplete(void) {
     /* It's not necessary to test the last level as
     it may have empty nodes. Hence the height-1 */
     for (int level = 1; level <= height - 1; level++) {
@@ -249,7 +245,7 @@ bool BinarySearchTree<DataType, KeyType>::isComplete(void) {
 }
 
 template <typename DataType, typename KeyType>
-int BinarySearchTree<DataType, KeyType>::get_height(Node* _pt) {
+int Avl<DataType, KeyType>::get_height(Node* _pt) {
     if (_pt == nullptr) {
         return 0;
     } else {
@@ -267,13 +263,13 @@ int BinarySearchTree<DataType, KeyType>::get_height(Node* _pt) {
 }
 
 template <typename DataType, typename KeyType>
-bool BinarySearchTree<DataType, KeyType>::isFull(void) {
+bool Avl<DataType, KeyType>::isFull(void) {
     return number_of_nodes == std::pow(2, height) - 1;
 }
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss,
-                                                               const std::string& prefix) {
+void Avl<DataType, KeyType>::toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss,
+                                                  const std::string& prefix) {
     if (node != nullptr) {
         ss << prefix;
         ss << (isLeft ? "├──" : "└──");
@@ -288,13 +284,13 @@ void BinarySearchTree<DataType, KeyType>::toStringHierarchical(const Node* node,
 }
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::toStringHierarchical(Node* pointer, std::stringstream& ss) {
+void Avl<DataType, KeyType>::toStringHierarchical(Node* pointer, std::stringstream& ss) {
     ss << std::endl << std::endl;
     toStringHierarchical(pointer, false, ss, "");
 }
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::toStringSorted(Node* pointer, std::stringstream& ss) {
+void Avl<DataType, KeyType>::toStringSorted(Node* pointer, std::stringstream& ss) {
     if (pointer == nullptr) return;
     toStringSorted(pointer->left, ss);
     ss << pointer->key << " ";
@@ -302,7 +298,7 @@ void BinarySearchTree<DataType, KeyType>::toStringSorted(Node* pointer, std::str
 }
 
 template <typename DataType, typename KeyType>
-void BinarySearchTree<DataType, KeyType>::toStringPerLevel(Node* pointer, std::stringstream& ss) {
+void Avl<DataType, KeyType>::toStringPerLevel(Node* pointer, std::stringstream& ss) {
     std::queue<Node*> elements_per_level;  // queue is empty
 
     // Base Case
@@ -329,7 +325,7 @@ void BinarySearchTree<DataType, KeyType>::toStringPerLevel(Node* pointer, std::s
 }
 
 template <typename DataType, typename KeyType>
-std::string BinarySearchTree<DataType, KeyType>::toString(std::string type) {
+std::string Avl<DataType, KeyType>::toString(std::string type) {
     std::stringstream ss;
     if (type == "EM NIVEL") {
         toStringPerLevel(raw_pointer, ss);
@@ -347,4 +343,4 @@ std::string BinarySearchTree<DataType, KeyType>::toString(std::string type) {
     }
 }
 
-}  // namespace bst
+}  // namespace tree
