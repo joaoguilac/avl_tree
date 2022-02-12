@@ -25,9 +25,10 @@ class Avl {
         KeyType key;    //!< Key to my Nome.
         Node* left;     //!< Pointer to left Node.
         Node* right;    //!< Pointer to right Node.
+        size_t height;  //!< Height of Node.
 
-        Node(const DataType& _data = DataType{}, const KeyType& _key = KeyType{}, Node* l = nullptr, Node* r = nullptr)
-            : data{_data}, key{_key}, left{l}, right{r} {}
+        Node(const DataType& _data, const KeyType& _key, const size_t& h, Node* l = nullptr, Node* r = nullptr)
+            : data{_data}, key{_key}, left{l}, right{r}, height{h} {}
     };
 
     //=== Some aliases to help writing a clearer code.
@@ -36,6 +37,7 @@ class Avl {
     using DataConstReference = const DataType&;  //!< const reference to the data value.
     using KeyReference = KeyType&;               //!< reference to the key value.
     using KeyConstReference = const KeyType&;    //!< const reference to the key value.
+    using SizeConstReference = const size_t&;    //!< const reference to the size value.
 
     //=== Private members.
    private:
@@ -70,6 +72,8 @@ class Avl {
     void toStringSorted(Node* pointer, std::stringstream& ss);
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
+    // Chose Rotation
+    void choseRotation();
     // Rotation methods
     void rightRotate();
     void leftRotate();
