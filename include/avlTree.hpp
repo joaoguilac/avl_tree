@@ -36,7 +36,7 @@ class Avl {
     using DataConstReference = const DataType&;  //!< const reference to the data value.
     using KeyReference = KeyType&;               //!< reference to the key value.
     using KeyConstReference = const KeyType&;    //!< const reference to the key value.
-
+    using SizeConstReference = const size_t&; 
     //=== Private members.
    private:
     Node* raw_pointer;
@@ -48,7 +48,7 @@ class Avl {
     // Release the nodes in the destructor
     Node* freeNode(Node* node);
     // Insert method recursion
-    Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted);
+    Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted, SizeConstReference height);
     // Remove method recursion
     Node* remove(Node* pointer, KeyConstReference _key, bool& wasRemoved);
     // Find minimum element
