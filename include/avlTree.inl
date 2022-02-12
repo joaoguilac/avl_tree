@@ -10,8 +10,8 @@ template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Avl(void) : raw_pointer{nullptr}, height{0}, number_of_nodes{0} {}
 
 template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key) : Avl() {
-    raw_pointer = new Node(_data, _key);
+Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key, SizeConstReference height) : Avl() {
+    raw_pointer = new Node(_data, _key, height);
 }
 
 template <typename DataType, typename KeyType>
@@ -342,5 +342,22 @@ std::string Avl<DataType, KeyType>::toString(std::string type) {
         return ss.str();
     }
 }
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::choseRotation() {
+    return;
+}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::rightRotate() {}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::leftRotate() {}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::doubleRightRotate() {}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::doubleLeftRotate() {}
 
 }  // namespace tree
