@@ -40,7 +40,7 @@ void Avl<DataType, KeyType>::insert(DataConstReference _data, KeyConstReference 
     raw_pointer = insert(raw_pointer, _data, _key, wasInserted);
 
     if (wasInserted) {
-        height = get_height(raw_pointer);
+        height = getHeight(raw_pointer);
         number_of_nodes++;
     }
 }
@@ -75,7 +75,7 @@ void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
     bool wasRemoved = false;
     raw_pointer = remove(raw_pointer, _key, wasRemoved);
     if (wasRemoved) {
-        height = get_height(raw_pointer);
+        height = getHeight(raw_pointer);
         number_of_nodes--;
     }
 }
@@ -245,13 +245,13 @@ bool Avl<DataType, KeyType>::isComplete(void) {
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::get_height(Node* _pt) {
+int Avl<DataType, KeyType>::getHeight(Node* _pt) {
     if (_pt == nullptr) {
         return 0;
     } else {
         // Calculates the height of each subtree
-        int left_height = get_height(_pt->left);
-        int right_height = get_height(_pt->right);
+        int left_height = getHeight(_pt->left);
+        int right_height = getHeight(_pt->right);
 
         // Returns the highest height between the subtrees
         if (left_height > right_height) {
@@ -349,15 +349,33 @@ void Avl<DataType, KeyType>::choseRotation() {
 }
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::rightRotate() {}
+Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate(Node* head) {
+    Node* newHead = head->left;
+    head->left = newHead->left;
+    newHead->left = head;
+
+    head->height = 1 + std::max(head->left->height, head->right->height);
+    newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
+
+    return newHead;
+}
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::leftRotate() {}
+Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleLeftRotate(Node* head) {
+    Node* newHead = head->right;
+    head->right = newHead->left;
+    newHead->left = head;
+
+    head->height = 1 + std::max(head->left->height, head->right->height);
+    newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
+
+    return newHead;
+}
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::doubleRightRotate() {}
+Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleRightRotate() {}
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::doubleLeftRotate() {}
+Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate() {}
 
 }  // namespace tree
