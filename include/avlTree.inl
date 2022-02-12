@@ -10,8 +10,8 @@ template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Avl(void) : raw_pointer{nullptr}, height{0}, number_of_nodes{0} {}
 
 template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key, SizeConstReference height) : Avl() {
-    raw_pointer = new Node(_data, _key, height);
+Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key) : Avl() {
+    raw_pointer = new Node(_data, _key, (size_t)0);
 }
 
 template <typename DataType, typename KeyType>

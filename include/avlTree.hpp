@@ -85,7 +85,7 @@ class Avl {
 
     //=== Constructors and Destructors
     Avl(void);
-    Avl(DataConstReference _data, KeyConstReference _key, SizeConstReference height);
+    Avl(DataConstReference _data, KeyConstReference _key);
     ~Avl(void);
 
     //=== Modifiers Methods
