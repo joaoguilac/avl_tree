@@ -61,7 +61,12 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
         pointer->right = insert(pointer->right, _data, _key, wasInserted, height + 1);
     }
 
-    pointer->height = 1 + std::max(pointer->left->height, pointer->right->height);
+    if (pointer->left != nullptr && pointer->right != nullptr)
+        pointer->height = 1 + std::max(pointer->left->height, pointer->right->height);
+    else if (pointer->left != nullptr)
+        pointer->height = 1 + pointer->left->height;
+    else if (pointer->right != nullptr)
+        pointer->height = 1 + pointer->right->height;
 
     return pointer;
 }
@@ -352,16 +357,23 @@ std::string Avl<DataType, KeyType>::toString(std::string type) {
 
 template <typename DataType, typename KeyType>
 typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseRotation(Node* pointer) {
-    size_t leftHeight = pointer->left->height;
-    size_t rightHeight = pointer->right->height;
+    if (pointer->left == nullptr || pointer->right == nullptr) return pointer;
 
-    Node* LeftSon = pointer->left;
-    size_t leftLeftGrandchildHeight = LeftSon->left->height;
-    size_t leftRightGrandchildHeight = LeftSon->right->height;
+    Node* leftSon = pointer->left;
+    Node* rightSon = pointer->right;
 
-    Node* RightSon = pointer->right;
-    size_t rightLeftGrandchildHeight = RightSon->left->height;
-    size_t rightRightGrandchildHeight = RightSon->right->height;
+    if (leftSon->left == nullptr || leftSon->right == nullptr || rightSon->left == nullptr ||
+        rightSon->right == nullptr)
+        return pointer;
+
+    size_t leftHeight = leftSon->height;
+    size_t rightHeight = rightSon->height;
+
+    size_t leftLeftGrandchildHeight = leftSon->left->height;
+    size_t leftRightGrandchildHeight = leftSon->right->height;
+
+    size_t rightLeftGrandchildHeight = rightSon->left->height;
+    size_t rightRightGrandchildHeight = rightSon->right->height;
 
     int differenceBetweenLeftRightHeight = leftHeight - rightHeight;
 
