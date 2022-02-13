@@ -74,7 +74,7 @@ class Avl {
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
     // Chose Rotation
-    void choseRotation();
+    void choseRotation(Node* pointer);
     // Rotation methods
     Node* singleRightRotate(Node* head);
     Node* singleLeftRotate(Node* head);
