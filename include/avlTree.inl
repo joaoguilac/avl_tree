@@ -363,7 +363,7 @@ void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
             singleRightRotate(pointer);
         }else
             doubleRightRotate(pointer);
-    }else if(differenceHeightLeftRight == -2){
+    }else if(differenceBetweenLeftRightHeight == -2){
         if(heightRLSon > heightRRSon)
             singleLeftRotate(pointer);
         else
