@@ -381,7 +381,7 @@ Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleRightRotate(Node* he
 
 template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate(Node* head) {
-    head->left = singleRightRotate(head->left);
+    head->right = singleRightRotate(head->right);
     return singleLeftRotation(head);
 }
 
