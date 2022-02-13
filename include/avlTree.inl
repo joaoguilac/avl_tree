@@ -352,7 +352,7 @@ template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate(Node* head) {
     Node* newHead = head->left;
     head->left = newHead->right;
-    newHead->left = head;
+    newHead->right = head;
 
     head->height = 1 + std::max(head->left->height, head->right->height);
     newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
