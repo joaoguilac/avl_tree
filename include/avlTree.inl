@@ -345,9 +345,8 @@ std::string Avl<DataType, KeyType>::toString(std::string type) {
 
 template <typename DataType, typename KeyType>
 void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
-
-    size_t heightLeft = pointer->left->height;
-    size_t heightRight = pointer->right->height;
+    size_t leftHeight = pointer->left->height;
+    size_t rightHeight = pointer->right->height;
 
     Node* LeftSon = pointer->left;
     size_t leftLeftGrandchildHeight = LeftSon->left->height;
