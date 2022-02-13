@@ -48,17 +48,21 @@ void Avl<DataType, KeyType>::insert(DataConstReference _data, KeyConstReference 
 
 template <typename DataType, typename KeyType>
 typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* pointer, DataConstReference _data,
-                                                                      KeyConstReference _key, bool& wasInserted, SizeConstReference height) {
+                                                                      KeyConstReference _key, bool& wasInserted,
+                                                                      SizeConstReference height) {
     if (pointer == nullptr) {
-        pointer = new Node(_data, _key);
+        pointer = new Node(_data, _key, height);
         pointer->left = pointer->right = nullptr;
         wasInserted = true;
-        //chooseRotation(pointer->left);
+        pointer = chooseRotation(pointer);
     } else if (_key < pointer->key) {
         pointer->left = insert(pointer->left, _data, _key, wasInserted, height++);
     } else if (_key > pointer->key) {
         pointer->right = insert(pointer->right, _data, _key, wasInserted, height++);
     }
+
+    pointer->height = 1 + std::max(pointer->left->height, pointer->right->height);
+
     return pointer;
 }
 
