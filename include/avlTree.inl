@@ -354,8 +354,8 @@ void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
     size_t leftRightGrandchildHeight = LeftSon->right->height;
 
     Node* RightSon = pointer->right;
-    size_t heightRLSon = RightSon->left->height;
-    size_t heightRRSon = RightSon->right->height;
+    size_t rightLeftGrandchildHeight = RightSon->left->height;
+    size_t rightRightGrandchildHeight = RightSon->right->height;
 
 
     int differenceHeightLeftRight = heightLeft - heightRight;
