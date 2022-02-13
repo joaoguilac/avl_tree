@@ -74,6 +74,7 @@ template <typename DataType, typename KeyType>
 void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
     bool wasRemoved = false;
     raw_pointer = remove(raw_pointer, _key, wasRemoved);
+    
     if (wasRemoved) {
         height = getHeight(raw_pointer);
         number_of_nodes--;
