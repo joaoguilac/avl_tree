@@ -73,8 +73,8 @@ class Avl {
     void toStringSorted(Node* pointer, std::stringstream& ss);
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
-    // Chose Rotation
-    void choseRotation(Node* pointer);
+    // Choose Rotation
+    Node* chooseRotation(Node* pointer);
     // Rotation methods
     Node* singleRightRotate(Node* head);
     Node* singleLeftRotate(Node* head);

@@ -351,7 +351,7 @@ std::string Avl<DataType, KeyType>::toString(std::string type) {
 }
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseRotation(Node* pointer) {
     size_t leftHeight = pointer->left->height;
     size_t rightHeight = pointer->right->height;
 
@@ -367,15 +367,16 @@ void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
 
     if (differenceBetweenLeftRightHeight == 2) {
         if (leftLeftGrandchildHeight > leftRightGrandchildHeight)
-            singleRightRotate(pointer);
+            pointer = singleRightRotate(pointer);
         else
-            doubleRightRotate(pointer);
+            pointer = doubleRightRotate(pointer);
     } else if (differenceBetweenLeftRightHeight == -2) {
         if (rightLeftGrandchildHeight > rightRightGrandchildHeight)
-            singleLeftRotate(pointer);
+            pointer = singleLeftRotate(pointer);
         else
-            doubleLeftRotate(pointer);
+            pointer = doubleLeftRotate(pointer);
     }
+    return pointer;
 }
 
 template <typename DataType, typename KeyType>
@@ -385,7 +386,7 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate
     newHead->right = head;
 
     head->height = 1 + std::max(head->left->height, head->right->height);
-    newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
+    newHead->height = 1 + std::max(newHead->left->height, newHead->right->height);
 
     return newHead;
 }
@@ -397,21 +398,21 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleLeftRotate(
     newHead->left = head;
 
     head->height = 1 + std::max(head->left->height, head->right->height);
-    newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
+    newHead->height = 1 + std::max(newHead->left->height, newHead->right->height);
 
     return newHead;
 }
 
 template <typename DataType, typename KeyType>
 typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleRightRotate(Node* head) {
-    head->left = singleLeftRotation(head->left);
-    return singleRightRotation(head);
+    head->left = singleLeftRotate(head->left);
+    return singleRightRotate(head);
 }
 
 template <typename DataType, typename KeyType>
 typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate(Node* head) {
     head->right = singleRightRotate(head->right);
-    return singleLeftRotation(head);
+    return singleLeftRotate(head);
 }
 
 }  // namespace tree
