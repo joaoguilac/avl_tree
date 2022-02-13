@@ -358,8 +358,7 @@ void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
 
     int differenceBetweenLeftRightHeight = leftHeight - rightHeight;
 
-    if(differenceHeightLeftRight == 2){
-
+    if(differenceBetweenLeftRightHeight == 2){
         if(heightLeftSon > heightRightSon){
             rightRotate(pointer);
         }else
