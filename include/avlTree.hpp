@@ -66,7 +66,7 @@ class Avl {
     // Auxiliar method for the isComplete method
     int nodesOnLevel(Node* _pt, int current_level, int level);
     // Returns height of tree
-    int get_height(Node* _pt);
+    int getHeight(Node* _pt);
     // Methods for the various ways of printing the tree (toString)
     void toStringPerLevel(Node* pointer, std::stringstream& ss);
     void toStringSorted(Node* pointer, std::stringstream& ss);
@@ -75,10 +75,10 @@ class Avl {
     // Chose Rotation
     void choseRotation(Node* pointer);
     // Rotation methods
-    void rightRotate();
-    void leftRotate();
-    void doubleRightRotate();
-    void doubleLeftRotate();
+    Node* singleRightRotate(Node* head);
+    Node* singleLeftRotate(Node* head);
+    Node* doubleRightRotate(Node* head);
+    Node* doubleLeftRotate(Node* head);
 
    public:
     //=== Public interface
