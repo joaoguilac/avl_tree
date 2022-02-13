@@ -351,7 +351,7 @@ void Avl<DataType, KeyType>::choseRotation() {
 template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate(Node* head) {
     Node* newHead = head->left;
-    head->left = newHead->left;
+    head->left = newHead->right;
     newHead->left = head;
 
     head->height = 1 + std::max(head->left->height, head->right->height);
