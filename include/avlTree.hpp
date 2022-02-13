@@ -77,8 +77,8 @@ class Avl {
     // Rotation methods
     Node* singleRightRotate(Node* head);
     Node* singleLeftRotate(Node* head);
-    Node* doubleRightRotate();
-    Node* doubleLeftRotate();
+    Node* doubleRightRotate(Node* head);
+    Node* doubleLeftRotate(Node* head);
 
    public:
     //=== Public interface
