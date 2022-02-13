@@ -25,9 +25,10 @@ class Avl {
         KeyType key;    //!< Key to my Nome.
         Node* left;     //!< Pointer to left Node.
         Node* right;    //!< Pointer to right Node.
+        size_t height;  //!< Height of Node.
 
-        Node(const DataType& _data = DataType{}, const KeyType& _key = KeyType{}, Node* l = nullptr, Node* r = nullptr)
-            : data{_data}, key{_key}, left{l}, right{r} {}
+        Node(const DataType& _data, const KeyType& _key, const size_t& h, Node* l = nullptr, Node* r = nullptr)
+            : data{_data}, key{_key}, left{l}, right{r}, height{h} {}
     };
 
     //=== Some aliases to help writing a clearer code.
@@ -36,7 +37,8 @@ class Avl {
     using DataConstReference = const DataType&;  //!< const reference to the data value.
     using KeyReference = KeyType&;               //!< reference to the key value.
     using KeyConstReference = const KeyType&;    //!< const reference to the key value.
-    using SizeConstReference = const size_t&; 
+    using SizeConstReference = const size_t&;    //!< const reference to the size value.
+
     //=== Private members.
    private:
     Node* raw_pointer;
@@ -48,7 +50,8 @@ class Avl {
     // Release the nodes in the destructor
     Node* freeNode(Node* node);
     // Insert method recursion
-    Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted, SizeConstReference height);
+    Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted,
+                 SizeConstReference height);
     // Remove method recursion
     Node* remove(Node* pointer, KeyConstReference _key, bool& wasRemoved);
     // Find minimum element
@@ -64,17 +67,19 @@ class Avl {
     // Auxiliar method for the isComplete method
     int nodesOnLevel(Node* _pt, int current_level, int level);
     // Returns height of tree
-    int get_height(Node* _pt);
+    int getHeight(Node* _pt);
     // Methods for the various ways of printing the tree (toString)
     void toStringPerLevel(Node* pointer, std::stringstream& ss);
     void toStringSorted(Node* pointer, std::stringstream& ss);
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
+    // Chose Rotation
+    void choseRotation();
     // Rotation methods
-    void rightRotate();
-    void leftRotate();
-    void doubleRightRotate();
-    void doubleLeftRotate();
+    Node* singleRightRotate(Node* head);
+    Node* singleLeftRotate(Node* head);
+    Node* doubleRightRotate(Node* head);
+    Node* doubleLeftRotate(Node* head);
 
    public:
     //=== Public interface
