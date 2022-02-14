@@ -28,8 +28,8 @@ class Avl {
         size_t height;  //!< Height of Node.
         int balance;    //!< left subtree height - right subtree height
 
-        Node(const DataType& _data, const KeyType& _key, const size_t& h = 1, 
-             const int& b = 0, Node* l = nullptr, Node* r = nullptr)
+        Node(const DataType& _data, const KeyType& _key, const size_t& h = 1, const int& b = 0, Node* l = nullptr,
+             Node* r = nullptr)
             : data{_data}, key{_key}, left{l}, right{r}, height{h}, balance{b} {}
     };
 
@@ -109,5 +109,9 @@ class Avl {
 
 }  // namespace tree
 
-#include "avlTree.inl"
+#include "acess.inl"
+#include "contructors.inl"
+#include "modifiers.inl"
+#include "toString.inl"
+
 #endif  // _AVL_TREE_
