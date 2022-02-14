@@ -140,11 +140,9 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate
     head->left = newHead->right;
     newHead->right = head;
 
-    // Update height of old head and new head.
     head->height = getHeight(head);
     newHead->height = getHeight(newHead);
 
-    // Update balance of the old head.
     size_t heightHeadLeft = head->left == nullptr ? 0 : getHeight(head->left);
     size_t heightHeadRight = head->right == nullptr ? 0 : getHeight(head->right);
     head->balance = (int) heightHeadLeft - heightHeadRight;
@@ -158,11 +156,9 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleLeftRotate(
     head->right = newHead->left;
     newHead->left = head;
 
-    // Update height of old head and new head.
     head->height = getHeight(head);
     newHead->height = getHeight(newHead);
 
-    // Update balance of the old head.
     size_t heightHeadLeft = head->left == nullptr ? 0 : getHeight(head->left);
     size_t heightHeadRight = head->right == nullptr ? 0 : getHeight(head->right);
     head->balance = (int) heightHeadLeft - heightHeadRight;
@@ -195,14 +191,21 @@ void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
 
 template <typename DataType, typename KeyType>
 size_t Avl<DataType, KeyType>::getHeight(Node* pointer) {
+    size_t height;
+
     if (pointer->left != nullptr && pointer->right != nullptr)
-        return 1 + std::max(pointer->left->height, pointer->right->height);
+        height = 1 + std::max(pointer->left->height, pointer->right->height);
+        
     else if (pointer->left != nullptr)
-        return 1 + pointer->left->height;
+        height = 1 + pointer->left->height;
+
     else if (pointer->right != nullptr)
-        return 1 + pointer->right->height;
+        height = 1 + pointer->right->height;
+
     else
-        return 1;
+        height = 1;
+
+    return height;
 }
 
 template <typename DataType, typename KeyType>
@@ -269,7 +272,9 @@ DataType Avl<DataType, KeyType>::elementInPosition(int position) {
     int iterator = 1;
     bool var_controle = false;
     DataType key;
+
     simetricToElement(raw_pointer, iterator, position, var_controle, key);
+
     return key;
 }
 
@@ -451,10 +456,8 @@ void Avl<DataType, KeyType>::toStringHierarchical(const Node* node, bool isLeft,
         ss << prefix;
         ss << (isLeft ? "├──" : "└──");
 
-        // print the value of the node
         ss << node->key << std::endl;
 
-        // enter the next tree level - left and right branch
         toStringHierarchical(node->left, true, ss, prefix + (isLeft ? "│   " : "    "));
         toStringHierarchical(node->right, false, ss, prefix + (isLeft ? "│   " : "    "));
     }
