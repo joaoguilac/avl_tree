@@ -11,7 +11,7 @@ Avl<DataType, KeyType>::Avl(void) : raw_pointer{nullptr}, height_of_tree{0}, num
 
 template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key) : Avl() {
-    raw_pointer = new Node(_data, _key, (size_t) 0);
+    raw_pointer = new Node(_data, _key);
     height_of_tree = 1;
     number_of_nodes = 1;
 }
@@ -53,7 +53,7 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
                                                                       KeyConstReference _key, bool& wasInserted,
                                                                       bool& needCheckBalance) {
     if (pointer == nullptr) {
-        pointer = new Node(_data, _key, 1);
+        pointer = new Node(_data, _key);
         pointer->left = pointer->right = nullptr;
         wasInserted = true;
         needCheckBalance = true;
@@ -74,7 +74,8 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
                 pointer->balance = 1;
                 break;
             case 1:
-                pointer = chooseRightRotation(pointer, needCheckBalance);
+                pointer = chooseRightRotation(pointer);
+                needCheckBalance = false;
                 break;
             }
         }
@@ -95,7 +96,8 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
                 pointer->balance = -1;
                 break;
             case -1:
-                pointer = chooseLeftRotation(pointer, needCheckBalance);
+                pointer = chooseLeftRotation(pointer);
+                needCheckBalance = false;
                 break;
             }
         }
@@ -107,7 +109,7 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
 }
 
 template <typename DataType, typename KeyType>
-typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseRightRotation(Node* pointer, bool& needCheckBalance) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseRightRotation(Node* pointer) {
     if (pointer->left->balance == 1) {
         pointer = singleRightRotate(pointer);
     }
@@ -116,12 +118,11 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseRightRotati
     }
 
     pointer->balance = 0;
-    needCheckBalance = false;
     return pointer;
 }
 
 template <typename DataType, typename KeyType>
-typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseLeftRotation(Node* pointer, bool& needCheckBalance) {
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseLeftRotation(Node* pointer) {
     if (pointer->right->balance == -1) {
         pointer = singleLeftRotate(pointer);
     }
@@ -130,7 +131,6 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseLeftRotatio
     }
 
     pointer->balance = 0;
-    needCheckBalance = false;
     return pointer;
 }
 
@@ -183,17 +183,6 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate(
 }
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
-    bool wasRemoved = false;
-    raw_pointer = remove(raw_pointer, _key, wasRemoved);
-
-    if (wasRemoved) {
-        height_of_tree = raw_pointer->height;
-        number_of_nodes--;
-    }
-}
-
-template <typename DataType, typename KeyType>
 size_t Avl<DataType, KeyType>::getHeight(Node* pointer) {
     if (pointer->left != nullptr && pointer->right != nullptr)
         return 1 + std::max(pointer->left->height, pointer->right->height);
@@ -206,20 +195,73 @@ size_t Avl<DataType, KeyType>::getHeight(Node* pointer) {
 }
 
 template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
+    bool wasRemoved = false;
+    raw_pointer = remove(raw_pointer, _key, wasRemoved);
+
+    if (wasRemoved) {
+        height_of_tree = raw_pointer->height;
+        number_of_nodes--;
+    }
+}
+
+template <typename DataType, typename KeyType>
 typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::remove(Node* pointer, KeyConstReference _key,
                                                                       bool& wasRemoved) {
     Node* nodeTemp;
     if (pointer == nullptr) return nullptr;
-    if (_key < pointer->key)
+    if (_key < pointer->key) {
         pointer->left = remove(pointer->left, _key, wasRemoved);
-    else if (_key > pointer->key)
+
+        if (wasRemoved) {
+            size_t heightLeft = pointer->left == nullptr ? 0 : getHeight(pointer->left);
+            size_t heightRight = pointer->right == nullptr ? 0 : getHeight(pointer->right);
+            int newBalance = (int) heightLeft - heightRight;
+
+            if (newBalance == -2) {
+                pointer = chooseLeftRotation(pointer);
+            }
+            else if (newBalance != pointer->balance) {
+                pointer->balance -= 1;
+            }
+        }
+    }
+    else if (_key > pointer->key) {
         pointer->right = remove(pointer->right, _key, wasRemoved);
+
+        if (wasRemoved) {
+            size_t heightLeft = pointer->left == nullptr ? 0 : getHeight(pointer->left);
+            size_t heightRight = pointer->right == nullptr ? 0 : getHeight(pointer->right);
+            int newBalance = (int) heightLeft - heightRight;
+
+            if (newBalance == 2) {
+                pointer = chooseRightRotation(pointer);
+            }
+            else if (newBalance != pointer->balance) {
+                pointer->balance += 1;
+            }
+        }
+    }
     else if (pointer->left && pointer->right) {
         nodeTemp = findMinimumElement(pointer->right);
         pointer->key = nodeTemp->key;
         pointer->data = nodeTemp->data;
         pointer->right = remove(pointer->right, pointer->key, wasRemoved);
-    } else {
+
+        if (wasRemoved) {
+            size_t heightLeft = pointer->left == nullptr ? 0 : getHeight(pointer->left);
+            size_t heightRight = pointer->right == nullptr ? 0 : getHeight(pointer->right);
+            int newBalance = (int) heightLeft - heightRight;
+
+            if (newBalance == 2) {
+                pointer = chooseRightRotation(pointer);
+            }
+            else if (newBalance != pointer->balance) {
+                pointer->balance += 1;
+            }
+        }
+    }
+    else {
         nodeTemp = pointer;
         if (pointer->left == nullptr)
             pointer = pointer->right;
@@ -227,6 +269,10 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::remove(Node* poin
             pointer = pointer->left;
         delete nodeTemp;
         wasRemoved = true;
+    }
+
+    if (pointer != nullptr) {
+        pointer->height = getHeight(pointer);
     }
 
     return pointer;
