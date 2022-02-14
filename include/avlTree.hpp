@@ -22,13 +22,13 @@ class Avl {
     //=== The data node.
     struct Node {
         DataType data;  //!< Information to be stored in the container.
-        KeyType key;    //!< Key to my Nome.
+        KeyType key;    //!< Key to my Node.
         Node* left;     //!< Pointer to left Node.
         Node* right;    //!< Pointer to right Node.
         size_t height;  //!< Height of Node.
         int balance;    //!< left subtree height - right subtree height
 
-        Node(const DataType& _data, const KeyType& _key, const size_t& h, 
+        Node(const DataType& _data, const KeyType& _key, const size_t& h = 1, 
              const int& b = 0, Node* l = nullptr, Node* r = nullptr)
             : data{_data}, key{_key}, left{l}, right{r}, height{h}, balance{b} {}
     };
@@ -54,8 +54,8 @@ class Avl {
     Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted,
                  bool& needCheckBalance);
     // Choose Rotation
-    Node* chooseRightRotation(Node* pointer, bool& needCheckBalance);
-    Node* chooseLeftRotation(Node* pointer, bool& needCheckBalance);
+    Node* chooseRightRotation(Node* pointer);
+    Node* chooseLeftRotation(Node* pointer);
     // Rotation methods
     Node* singleRightRotate(Node* head);
     Node* singleLeftRotate(Node* head);
