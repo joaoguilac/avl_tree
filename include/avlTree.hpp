@@ -26,9 +26,11 @@ class Avl {
         Node* left;     //!< Pointer to left Node.
         Node* right;    //!< Pointer to right Node.
         size_t height;  //!< Height of Node.
+        int balance;    //!< left subtree height - right subtree height
 
-        Node(const DataType& _data, const KeyType& _key, const size_t& h, Node* l = nullptr, Node* r = nullptr)
-            : data{_data}, key{_key}, left{l}, right{r}, height{h} {}
+        Node(const DataType& _data, const KeyType& _key, const size_t& h, 
+             const int& b = 0, Node* l = nullptr, Node* r = nullptr)
+            : data{_data}, key{_key}, left{l}, right{r}, height{h}, balance{b} {}
     };
 
     //=== Some aliases to help writing a clearer code.
@@ -37,13 +39,12 @@ class Avl {
     using DataConstReference = const DataType&;  //!< const reference to the data value.
     using KeyReference = KeyType&;               //!< reference to the key value.
     using KeyConstReference = const KeyType&;    //!< const reference to the key value.
-    using SizeConstReference = const size_t&;    //!< const reference to the size value.
 
     //=== Private members.
    private:
     Node* raw_pointer;
-    int height;
-    int number_of_nodes;
+    size_t height_of_tree;
+    size_t number_of_nodes;
 
     //=== Auxiliaries Methods
 
@@ -51,7 +52,17 @@ class Avl {
     Node* freeNode(Node* node);
     // Insert method recursion
     Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted,
-                 SizeConstReference height);
+                 bool& needCheckBalance);
+    // Choose Rotation
+    Node* chooseRightRotation(Node* pointer, bool& needCheckBalance);
+    Node* chooseLeftRotation(Node* pointer, bool& needCheckBalance);
+    // Rotation methods
+    Node* singleRightRotate(Node* head);
+    Node* singleLeftRotate(Node* head);
+    Node* doubleRightRotate(Node* head);
+    Node* doubleLeftRotate(Node* head);
+    // Update and return height of a Node
+    size_t getHeight(Node* _pt);
     // Remove method recursion
     Node* remove(Node* pointer, KeyConstReference _key, bool& wasRemoved);
     // Find minimum element
@@ -66,20 +77,11 @@ class Avl {
     void simetricToMedian(Node* node, std::vector<Node*>& dados);
     // Auxiliar method for the isComplete method
     int nodesOnLevel(Node* _pt, int current_level, int level);
-    // Returns height of tree
-    int getHeight(Node* _pt);
     // Methods for the various ways of printing the tree (toString)
     void toStringPerLevel(Node* pointer, std::stringstream& ss);
     void toStringSorted(Node* pointer, std::stringstream& ss);
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
-    // Choose Rotation
-    Node* chooseRotation(Node* pointer);
-    // Rotation methods
-    Node* singleRightRotate(Node* head);
-    Node* singleLeftRotate(Node* head);
-    Node* doubleRightRotate(Node* head);
-    Node* doubleLeftRotate(Node* head);
 
    public:
     //=== Public interface

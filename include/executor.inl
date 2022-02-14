@@ -123,14 +123,14 @@ std::string Executor<DataType, KeyType>::processLine(std::string line) {
 
     else if (commandName == "CHEIA") {
         str = tree->isFull() ? "" : "não ";
-        ss << "LOG :: CHEIA :: A ávore " << str << "é cheia.";
+        ss << "LOG :: CHEIA :: A árvore " << str << "é cheia.";
 
         return ss.str();
     }
 
     else if (commandName == "COMPLETA") {
         str = tree->isComplete() ? "" : "não ";
-        ss << "LOG :: COMPLETA :: A ávore " << str << "é completa.";
+        ss << "LOG :: COMPLETA :: A árvore " << str << "é completa.";
 
         return ss.str();
     }
