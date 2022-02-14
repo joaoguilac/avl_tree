@@ -7,11 +7,13 @@ namespace tree {
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Avl(void) : raw_pointer{nullptr}, height{0}, number_of_nodes{0} {}
+Avl<DataType, KeyType>::Avl(void) : raw_pointer{nullptr}, height_of_tree{0}, number_of_nodes{0} {}
 
 template <typename DataType, typename KeyType>
 Avl<DataType, KeyType>::Avl(DataConstReference _data, KeyConstReference _key) : Avl() {
-    raw_pointer = new Node(_data, _key, (size_t)0);
+    raw_pointer = new Node(_data, _key, (size_t) 0);
+    height_of_tree = 1;
+    number_of_nodes = 1;
 }
 
 template <typename DataType, typename KeyType>
@@ -37,48 +39,173 @@ Avl<DataType, KeyType>::~Avl(void) {
 template <typename DataType, typename KeyType>
 void Avl<DataType, KeyType>::insert(DataConstReference _data, KeyConstReference _key) {
     bool wasInserted = false;
-    raw_pointer = insert(raw_pointer, _data, _key, wasInserted);
+    bool needCheckBalance = false;
+    raw_pointer = insert(raw_pointer, _data, _key, wasInserted, needCheckBalance);
 
     if (wasInserted) {
-        height = getHeight(raw_pointer);
+        height_of_tree = raw_pointer->height;
         number_of_nodes++;
     }
 }
 
 template <typename DataType, typename KeyType>
 typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* pointer, DataConstReference _data,
-                                                                      KeyConstReference _key, bool& wasInserted) {
+                                                                      KeyConstReference _key, bool& wasInserted,
+                                                                      bool& needCheckBalance) {
     if (pointer == nullptr) {
-        pointer = new Node(_data, _key);
+        pointer = new Node(_data, _key, 1);
         pointer->left = pointer->right = nullptr;
         wasInserted = true;
+        needCheckBalance = true;
     } else if (_key < pointer->key) {
-        pointer->left = insert(pointer->left, _data, _key, wasInserted);
+        pointer->left = insert(pointer->left, _data, _key, wasInserted, needCheckBalance);
+        
+        /**
+         * if the insertion is successful, it needs to check if 
+         * each node in the insertion path maintains the balance.
+         */
+        if (needCheckBalance) {
+            switch (pointer->balance) {
+            case -1:
+                pointer->balance = 0;
+                needCheckBalance = false;
+                break;
+            case 0:
+                pointer->balance = 1;
+                break;
+            case 1:
+                pointer = chooseRightRotation(pointer, needCheckBalance);
+                break;
+            }
+        }
     } else if (_key > pointer->key) {
-        pointer->right = insert(pointer->right, _data, _key, wasInserted);
+        pointer->right = insert(pointer->right, _data, _key, wasInserted, needCheckBalance);
+
+        /**
+         * if the insertion is successful, it needs to check if 
+         * each node in the insertion path maintains the balance.
+         */
+        if (needCheckBalance) {
+            switch (pointer->balance) {
+            case 1:
+                pointer->balance = 0;
+                needCheckBalance = false;
+                break;
+            case 0:
+                pointer->balance = -1;
+                break;
+            case -1:
+                pointer = chooseLeftRotation(pointer, needCheckBalance);
+                break;
+            }
+        }
     }
+
+    pointer->height = getHeight(pointer);
+
     return pointer;
 }
 
 template <typename DataType, typename KeyType>
-typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::findMinimumElement(Node* pointer) {
-    if (pointer == nullptr)
-        return nullptr;
-    else if (pointer->left == nullptr)
-        return pointer;
-    else
-        return findMinimumElement(pointer->left);
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseRightRotation(Node* pointer, bool& needCheckBalance) {
+    if (pointer->left->balance == 1) {
+        pointer = singleRightRotate(pointer);
+    }
+    else {
+        pointer = doubleRightRotate(pointer);
+    }
+
+    pointer->balance = 0;
+    needCheckBalance = false;
+    return pointer;
+}
+
+template <typename DataType, typename KeyType>
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::chooseLeftRotation(Node* pointer, bool& needCheckBalance) {
+    if (pointer->right->balance == -1) {
+        pointer = singleLeftRotate(pointer);
+    }
+    else {
+        pointer = doubleLeftRotate(pointer);
+    }
+
+    pointer->balance = 0;
+    needCheckBalance = false;
+    return pointer;
+}
+
+template <typename DataType, typename KeyType>
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate(Node* head) {
+    Node* newHead = head->left;
+    head->left = newHead->right;
+    newHead->right = head;
+
+    head->height = getHeight(head);
+    newHead->height = getHeight(newHead);
+
+    size_t heightHeadLeft = head->left == nullptr ? 0 : getHeight(head->left);
+    size_t heightHeadRight = head->right == nullptr ? 0 : getHeight(head->right);
+    head->balance = (int) heightHeadLeft - heightHeadRight;
+
+    return newHead;
+}
+
+template <typename DataType, typename KeyType>
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleLeftRotate(Node* head) {
+    Node* newHead = head->right;
+    head->right = newHead->left;
+    newHead->left = head;
+
+    head->height = getHeight(head);
+    newHead->height = getHeight(newHead);
+
+    size_t heightHeadLeft = head->left == nullptr ? 0 : getHeight(head->left);
+    size_t heightHeadRight = head->right == nullptr ? 0 : getHeight(head->right);
+    head->balance = (int) heightHeadLeft - heightHeadRight;
+
+    return newHead;
+}
+
+template <typename DataType, typename KeyType>
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleRightRotate(Node* head) {
+    head->left = singleLeftRotate(head->left);
+    return singleRightRotate(head);
+}
+
+template <typename DataType, typename KeyType>
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate(Node* head) {
+    head->right = singleRightRotate(head->right);
+    return singleLeftRotate(head);
 }
 
 template <typename DataType, typename KeyType>
 void Avl<DataType, KeyType>::remove(KeyConstReference _key) {
     bool wasRemoved = false;
     raw_pointer = remove(raw_pointer, _key, wasRemoved);
-    
+
     if (wasRemoved) {
-        height = getHeight(raw_pointer);
+        height_of_tree = raw_pointer->height;
         number_of_nodes--;
     }
+}
+
+template <typename DataType, typename KeyType>
+size_t Avl<DataType, KeyType>::getHeight(Node* pointer) {
+    size_t height;
+
+    if (pointer->left != nullptr && pointer->right != nullptr)
+        height = 1 + std::max(pointer->left->height, pointer->right->height);
+        
+    else if (pointer->left != nullptr)
+        height = 1 + pointer->left->height;
+
+    else if (pointer->right != nullptr)
+        height = 1 + pointer->right->height;
+
+    else
+        height = 1;
+
+    return height;
 }
 
 template <typename DataType, typename KeyType>
@@ -109,6 +236,16 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::remove(Node* poin
 }
 
 template <typename DataType, typename KeyType>
+typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::findMinimumElement(Node* pointer) {
+    if (pointer == nullptr)
+        return nullptr;
+    else if (pointer->left == nullptr)
+        return pointer;
+    else
+        return findMinimumElement(pointer->left);
+}
+
+template <typename DataType, typename KeyType>
 bool Avl<DataType, KeyType>::search(KeyConstReference _key) {
     return search(raw_pointer, _key);
 }
@@ -129,36 +266,51 @@ bool Avl<DataType, KeyType>::search(Node* pointer, KeyConstReference _key) {
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::simetricToElement(Node* source, int& iteration, int position, bool& var_controle,
-                                              KeyReference element) {
-    if (source != nullptr) {
-        this->simetricToElement(source->left, iteration, position, var_controle, element);
+DataType Avl<DataType, KeyType>::elementInPosition(size_t position) {
+    if (position > number_of_nodes) return -1;
 
-        if (iteration == position) {
-            var_controle = true;
-            element = source->key;
-            iteration++;
-            return iteration;
-        }
+    size_t iterator = 1;
+    bool var_controle = false;
+    DataType key;
 
-        if (var_controle == false) {
-            iteration++;
-        }
+    simetricToElement(raw_pointer, iterator, position, var_controle, key);
 
-        this->simetricToElement(source->right, iteration, position, var_controle, element);
-    }
-    return 0;
+    return key;
 }
 
 template <typename DataType, typename KeyType>
-DataType Avl<DataType, KeyType>::elementInPosition(int position) {
-    if (position > number_of_nodes) return -1;
+void Avl<DataType, KeyType>::simetricToElement(Node* source, size_t& iteration, size_t position, bool& var_controle,
+                                              KeyReference element) {
+    if (source == nullptr) return;
+    
+    this->simetricToElement(source->left, iteration, position, var_controle, element);
 
-    int iterator = 1;
+    if (iteration == position) {
+        var_controle = true;
+        element = source->key;
+        iteration++;
+        return;
+    }
+
+    if (var_controle == false) {
+        iteration++;
+    }
+
+    this->simetricToElement(source->right, iteration, position, var_controle, element);
+}
+
+template <typename DataType, typename KeyType>
+int Avl<DataType, KeyType>::findPositionOfElement(KeyConstReference _key) {
+    int position = 1;
     bool var_controle = false;
-    DataType key;
-    simetricToElement(raw_pointer, iterator, position, var_controle, key);
-    return key;
+
+    simetric(raw_pointer, _key, position, var_controle);
+
+    if (var_controle == true) {
+        return position;
+    } else {
+        return -1;
+    }
 }
 
 template <typename DataType, typename KeyType>
@@ -177,29 +329,6 @@ int Avl<DataType, KeyType>::simetric(Node* source, KeyConstReference _key, int& 
         this->simetric(source->right, _key, iteration, var_controle);
     }
     return 0;
-}
-
-template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::findPositionOfElement(KeyConstReference _key) {
-    int position = 1;
-    bool var_controle = false;
-
-    simetric(raw_pointer, _key, position, var_controle);
-
-    if (var_controle == true) {
-        return position;
-    } else {
-        return -1;
-    }
-}
-
-template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::simetricToMedian(Node* node, std::vector<Node*>& dados) {
-    if (node != nullptr) {
-        this->simetricToMedian(node->left, dados);
-        dados.push_back(node);
-        this->simetricToMedian(node->right, dados);
-    }
 }
 
 template <typename DataType, typename KeyType>
@@ -222,21 +351,19 @@ DataType Avl<DataType, KeyType>::median(void) {
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, int current_level, int level) {
-    if (current_level == level) {
-        return (_pt == nullptr) ? 0 : 1;
+void Avl<DataType, KeyType>::simetricToMedian(Node* node, std::vector<Node*>& dados) {
+    if (node != nullptr) {
+        this->simetricToMedian(node->left, dados);
+        dados.push_back(node);
+        this->simetricToMedian(node->right, dados);
     }
-
-    int nodes_left = nodesOnLevel(_pt->left, current_level + 1, level);
-    int node_right = nodesOnLevel(_pt->right, current_level + 1, level);
-    return nodes_left + node_right;
 }
 
 template <typename DataType, typename KeyType>
 bool Avl<DataType, KeyType>::isComplete(void) {
     /* It's not necessary to test the last level as
-    it may have empty nodes. Hence the height-1 */
-    for (int level = 1; level <= height - 1; level++) {
+    it may have empty nodes. Hence the height_of_tree - 1 */
+    for (size_t level = 1; level <= height_of_tree - 1; level++) {
         if (nodesOnLevel(raw_pointer, 1, level) != std::pow(2, level - 1)) {
             return false;
         }
@@ -246,56 +373,38 @@ bool Avl<DataType, KeyType>::isComplete(void) {
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::getHeight(Node* _pt) {
-    if (_pt == nullptr) {
-        return 0;
-    } else {
-        // Calculates the height of each subtree
-        int left_height = getHeight(_pt->left);
-        int right_height = getHeight(_pt->right);
-
-        // Returns the highest height between the subtrees
-        if (left_height > right_height) {
-            return (left_height + 1);
-        } else {
-            return (right_height + 1);
-        }
+size_t Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, size_t current_level, size_t level) {
+    if (current_level == level) {
+        return (_pt == nullptr) ? 0 : 1;
     }
+
+    size_t nodes_left = nodesOnLevel(_pt->left, current_level + 1, level);
+    size_t node_right = nodesOnLevel(_pt->right, current_level + 1, level);
+    return nodes_left + node_right;
 }
 
 template <typename DataType, typename KeyType>
 bool Avl<DataType, KeyType>::isFull(void) {
-    return number_of_nodes == std::pow(2, height) - 1;
+    return number_of_nodes == std::pow(2, height_of_tree) - 1;
 }
 
 template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss,
-                                                  const std::string& prefix) {
-    if (node != nullptr) {
-        ss << prefix;
-        ss << (isLeft ? "├──" : "└──");
-
-        // print the value of the node
-        ss << node->key << std::endl;
-
-        // enter the next tree level - left and right branch
-        toStringHierarchical(node->left, true, ss, prefix + (isLeft ? "│   " : "    "));
-        toStringHierarchical(node->right, false, ss, prefix + (isLeft ? "│   " : "    "));
+std::string Avl<DataType, KeyType>::toString(std::string type) {
+    std::stringstream ss;
+    if (type == "EM NIVEL") {
+        toStringPerLevel(raw_pointer, ss);
+    } else if (type == "SIMETRICA") {
+        toStringSorted(raw_pointer, ss);
+    } else if (type == "HIERARQUICA") {
+        toStringHierarchical(raw_pointer, ss);
     }
-}
 
-template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::toStringHierarchical(Node* pointer, std::stringstream& ss) {
-    ss << std::endl << std::endl;
-    toStringHierarchical(pointer, false, ss, "");
-}
-
-template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::toStringSorted(Node* pointer, std::stringstream& ss) {
-    if (pointer == nullptr) return;
-    toStringSorted(pointer->left, ss);
-    ss << pointer->key << " ";
-    toStringSorted(pointer->right, ss);
+    // If the tree has no elements
+    if (ss.str().empty()) {
+        return "Árvore vazia";
+    } else {
+        return ss.str();
+    }
 }
 
 template <typename DataType, typename KeyType>
@@ -326,86 +435,31 @@ void Avl<DataType, KeyType>::toStringPerLevel(Node* pointer, std::stringstream& 
 }
 
 template <typename DataType, typename KeyType>
-std::string Avl<DataType, KeyType>::toString(std::string type) {
-    std::stringstream ss;
-    if (type == "EM NIVEL") {
-        toStringPerLevel(raw_pointer, ss);
-    } else if (type == "SIMETRICA") {
-        toStringSorted(raw_pointer, ss);
-    } else if (type == "HIERARQUICA") {
-        toStringHierarchical(raw_pointer, ss);
+void Avl<DataType, KeyType>::toStringSorted(Node* pointer, std::stringstream& ss) {
+    if (pointer == nullptr) return;
+    toStringSorted(pointer->left, ss);
+    ss << pointer->key << " ";
+    toStringSorted(pointer->right, ss);
+}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::toStringHierarchical(Node* pointer, std::stringstream& ss) {
+    ss << std::endl << std::endl;
+    toStringHierarchical(pointer, false, ss, "");
+}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss,
+                                                  const std::string& prefix) {
+    if (node != nullptr) {
+        ss << prefix;
+        ss << (isLeft ? "├──" : "└──");
+
+        ss << node->key << std::endl;
+
+        toStringHierarchical(node->left, true, ss, prefix + (isLeft ? "│   " : "    "));
+        toStringHierarchical(node->right, false, ss, prefix + (isLeft ? "│   " : "    "));
     }
-
-    // If the tree has no elements
-    if (ss.str().empty()) {
-        return "Árvore vazia";
-    } else {
-        return ss.str();
-    }
-}
-
-template <typename DataType, typename KeyType>
-void Avl<DataType, KeyType>::choseRotation(Node* pointer) {
-    size_t leftHeight = pointer->left->height;
-    size_t rightHeight = pointer->right->height;
-
-    Node* LeftSon = pointer->left;
-    size_t leftLeftGrandchildHeight = LeftSon->left->height;
-    size_t leftRightGrandchildHeight = LeftSon->right->height;
-
-    Node* RightSon = pointer->right;
-    size_t rightLeftGrandchildHeight = RightSon->left->height;
-    size_t rightRightGrandchildHeight = RightSon->right->height;
-
-    int differenceBetweenLeftRightHeight = leftHeight - rightHeight;
-
-    if(differenceBetweenLeftRightHeight == 2){
-        if(leftLeftGrandchildHeight > leftRightGrandchildHeight)
-            singleRightRotate(pointer);
-        else
-            doubleRightRotate(pointer);
-    }else if(differenceBetweenLeftRightHeight == -2){
-        if(rightLeftGrandchildHeight > rightRightGrandchildHeight)
-            singleLeftRotate(pointer);
-        else
-            doubleLeftRotate(pointer);
-    }
-}
-
-template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate(Node* head) {
-    Node* newHead = head->left;
-    head->left = newHead->right;
-    newHead->right = head;
-
-    head->height = 1 + std::max(head->left->height, head->right->height);
-    newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
-
-    return newHead;
-}
-
-template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleLeftRotate(Node* head) {
-    Node* newHead = head->right;
-    head->right = newHead->left;
-    newHead->left = head;
-
-    head->height = 1 + std::max(head->left->height, head->right->height);
-    newHead->height = 1 + std::max(newhead->left->height, newHead->right->height);
-
-    return newHead;
-}
-
-template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleRightRotate(Node* head) {
-    head->left = singleLeftRotation(head->left);
-    return singleRightRotation(head);
-}
-
-template <typename DataType, typename KeyType>
-Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate(Node* head) {
-    head->right = singleRightRotate(head->right);
-    return singleLeftRotation(head);
 }
 
 }  // namespace tree
