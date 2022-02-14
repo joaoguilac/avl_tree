@@ -266,10 +266,10 @@ bool Avl<DataType, KeyType>::search(Node* pointer, KeyConstReference _key) {
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-DataType Avl<DataType, KeyType>::elementInPosition(int position) {
+DataType Avl<DataType, KeyType>::elementInPosition(size_t position) {
     if (position > number_of_nodes) return -1;
 
-    int iterator = 1;
+    size_t iterator = 1;
     bool var_controle = false;
     DataType key;
 
@@ -279,25 +279,24 @@ DataType Avl<DataType, KeyType>::elementInPosition(int position) {
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::simetricToElement(Node* source, int& iteration, int position, bool& var_controle,
+void Avl<DataType, KeyType>::simetricToElement(Node* source, size_t& iteration, size_t position, bool& var_controle,
                                               KeyReference element) {
-    if (source != nullptr) {
-        this->simetricToElement(source->left, iteration, position, var_controle, element);
+    if (source == nullptr) return;
+    
+    this->simetricToElement(source->left, iteration, position, var_controle, element);
 
-        if (iteration == position) {
-            var_controle = true;
-            element = source->key;
-            iteration++;
-            return iteration;
-        }
-
-        if (var_controle == false) {
-            iteration++;
-        }
-
-        this->simetricToElement(source->right, iteration, position, var_controle, element);
+    if (iteration == position) {
+        var_controle = true;
+        element = source->key;
+        iteration++;
+        return;
     }
-    return 0;
+
+    if (var_controle == false) {
+        iteration++;
+    }
+
+    this->simetricToElement(source->right, iteration, position, var_controle, element);
 }
 
 template <typename DataType, typename KeyType>
@@ -364,7 +363,7 @@ template <typename DataType, typename KeyType>
 bool Avl<DataType, KeyType>::isComplete(void) {
     /* It's not necessary to test the last level as
     it may have empty nodes. Hence the height_of_tree - 1 */
-    for (int level = 1; level <= height_of_tree - 1; level++) {
+    for (size_t level = 1; level <= height_of_tree - 1; level++) {
         if (nodesOnLevel(raw_pointer, 1, level) != std::pow(2, level - 1)) {
             return false;
         }
@@ -374,13 +373,13 @@ bool Avl<DataType, KeyType>::isComplete(void) {
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, int current_level, int level) {
+size_t Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, size_t current_level, size_t level) {
     if (current_level == level) {
         return (_pt == nullptr) ? 0 : 1;
     }
 
-    int nodes_left = nodesOnLevel(_pt->left, current_level + 1, level);
-    int node_right = nodesOnLevel(_pt->right, current_level + 1, level);
+    size_t nodes_left = nodesOnLevel(_pt->left, current_level + 1, level);
+    size_t node_right = nodesOnLevel(_pt->right, current_level + 1, level);
     return nodes_left + node_right;
 }
 
