@@ -140,11 +140,9 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleRightRotate
     head->left = newHead->right;
     newHead->right = head;
 
-    // Update height of old head and new head.
     head->height = getHeight(head);
     newHead->height = getHeight(newHead);
 
-    // Update balance of the old head.
     size_t heightHeadLeft = head->left == nullptr ? 0 : getHeight(head->left);
     size_t heightHeadRight = head->right == nullptr ? 0 : getHeight(head->right);
     head->balance = (int) heightHeadLeft - heightHeadRight;
@@ -158,11 +156,9 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::singleLeftRotate(
     head->right = newHead->left;
     newHead->left = head;
 
-    // Update height of old head and new head.
     head->height = getHeight(head);
     newHead->height = getHeight(newHead);
 
-    // Update balance of the old head.
     size_t heightHeadLeft = head->left == nullptr ? 0 : getHeight(head->left);
     size_t heightHeadRight = head->right == nullptr ? 0 : getHeight(head->right);
     head->balance = (int) heightHeadLeft - heightHeadRight;
@@ -184,14 +180,21 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::doubleLeftRotate(
 
 template <typename DataType, typename KeyType>
 size_t Avl<DataType, KeyType>::getHeight(Node* pointer) {
+    size_t height;
+
     if (pointer->left != nullptr && pointer->right != nullptr)
-        return 1 + std::max(pointer->left->height, pointer->right->height);
+        height = 1 + std::max(pointer->left->height, pointer->right->height);
+        
     else if (pointer->left != nullptr)
-        return 1 + pointer->left->height;
+        height = 1 + pointer->left->height;
+
     else if (pointer->right != nullptr)
-        return 1 + pointer->right->height;
+        height = 1 + pointer->right->height;
+
     else
-        return 1;
+        height = 1;
+
+    return height;
 }
 
 template <typename DataType, typename KeyType>
@@ -309,36 +312,37 @@ bool Avl<DataType, KeyType>::search(Node* pointer, KeyConstReference _key) {
  ****************************************************************************/
 
 template <typename DataType, typename KeyType>
-DataType Avl<DataType, KeyType>::elementInPosition(int position) {
+DataType Avl<DataType, KeyType>::elementInPosition(size_t position) {
     if (position > number_of_nodes) return -1;
 
-    int iterator = 1;
+    size_t iterator = 1;
     bool var_controle = false;
     DataType key;
+
     simetricToElement(raw_pointer, iterator, position, var_controle, key);
+
     return key;
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::simetricToElement(Node* source, int& iteration, int position, bool& var_controle,
+void Avl<DataType, KeyType>::simetricToElement(Node* source, size_t& iteration, size_t position, bool& var_controle,
                                               KeyReference element) {
-    if (source != nullptr) {
-        this->simetricToElement(source->left, iteration, position, var_controle, element);
+    if (source == nullptr) return;
+    
+    this->simetricToElement(source->left, iteration, position, var_controle, element);
 
-        if (iteration == position) {
-            var_controle = true;
-            element = source->key;
-            iteration++;
-            return iteration;
-        }
-
-        if (var_controle == false) {
-            iteration++;
-        }
-
-        this->simetricToElement(source->right, iteration, position, var_controle, element);
+    if (iteration == position) {
+        var_controle = true;
+        element = source->key;
+        iteration++;
+        return;
     }
-    return 0;
+
+    if (var_controle == false) {
+        iteration++;
+    }
+
+    this->simetricToElement(source->right, iteration, position, var_controle, element);
 }
 
 template <typename DataType, typename KeyType>
@@ -405,7 +409,7 @@ template <typename DataType, typename KeyType>
 bool Avl<DataType, KeyType>::isComplete(void) {
     /* It's not necessary to test the last level as
     it may have empty nodes. Hence the height_of_tree - 1 */
-    for (int level = 1; level <= height_of_tree - 1; level++) {
+    for (size_t level = 1; level <= height_of_tree - 1; level++) {
         if (nodesOnLevel(raw_pointer, 1, level) != std::pow(2, level - 1)) {
             return false;
         }
@@ -415,13 +419,13 @@ bool Avl<DataType, KeyType>::isComplete(void) {
 }
 
 template <typename DataType, typename KeyType>
-int Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, int current_level, int level) {
+size_t Avl<DataType, KeyType>::nodesOnLevel(Node* _pt, size_t current_level, size_t level) {
     if (current_level == level) {
         return (_pt == nullptr) ? 0 : 1;
     }
 
-    int nodes_left = nodesOnLevel(_pt->left, current_level + 1, level);
-    int node_right = nodesOnLevel(_pt->right, current_level + 1, level);
+    size_t nodes_left = nodesOnLevel(_pt->left, current_level + 1, level);
+    size_t node_right = nodesOnLevel(_pt->right, current_level + 1, level);
     return nodes_left + node_right;
 }
 
@@ -497,10 +501,8 @@ void Avl<DataType, KeyType>::toStringHierarchical(const Node* node, bool isLeft,
         ss << prefix;
         ss << (isLeft ? "├──" : "└──");
 
-        // print the value of the node
         ss << node->key << std::endl;
 
-        // enter the next tree level - left and right branch
         toStringHierarchical(node->left, true, ss, prefix + (isLeft ? "│   " : "    "));
         toStringHierarchical(node->right, false, ss, prefix + (isLeft ? "│   " : "    "));
     }
