@@ -70,13 +70,13 @@ class Avl {
     // Search method recursion
     bool search(Node* pointer, KeyConstReference _key);
     // Route in symmetrical order to calculate the elementInPosition
-    int simetricToElement(Node* source, int& iteration, int position, bool& var_controle, KeyReference element);
+    void simetricToElement(Node* source, size_t& iteration, size_t position, bool& var_controle, KeyReference element);
     // Route in symmetrical order for findPositionOfElement method
     int simetric(Node* source, KeyConstReference key, int& iteration, bool& var_controle);
     // Route in symmetrical order to calculate the median
     void simetricToMedian(Node* node, std::vector<Node*>& dados);
     // Auxiliar method for the isComplete method
-    int nodesOnLevel(Node* _pt, int current_level, int level);
+    size_t nodesOnLevel(Node* _pt, size_t current_level, size_t level);
     // Methods for the various ways of printing the tree (toString)
     void toStringPerLevel(Node* pointer, std::stringstream& ss);
     void toStringSorted(Node* pointer, std::stringstream& ss);
@@ -97,7 +97,7 @@ class Avl {
     bool search(KeyConstReference _key);
 
     //=== Access Methods
-    DataType elementInPosition(int position);
+    DataType elementInPosition(size_t position);
     int findPositionOfElement(KeyConstReference _key);
     DataType median(void);
     bool isComplete(void);
