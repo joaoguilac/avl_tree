@@ -44,7 +44,7 @@ Para execução do projeto devem ser passados dois arquivos como argumentos:
 
       Adicionamos mais duas formas de impressão da árvore: `IMPRIMA ORDENADO` e `IMPRIMA HIERARQUICO`. Esses métodos não foram requeridos pela docente.
 
-      O `IMPRIMA` mostra a AVL **por nível**, o `IMPRIMA ORDENADO` mostra a AVL de forma ordenada pelo valor do dado (através do percorrimento em **ordem simétrica**) e o `IMPRIMA HIERARQUICO` é a AVL na **representação hierárquica**, por nível, de forma mais visual.
+      O `IMPRIMA` mostra a árvore AVL **por nível**, o `IMPRIMA ORDENADO` mostra a árvore AVL de forma ordenada pelo valor do dado (através do percorrimento em **ordem simétrica**) e o `IMPRIMA HIERARQUICO` é a AVL na **representação hierárquica**, por nível, de forma mais visual.
 
       O `QUIT`, é um comando que também não foi requerido pela docente, mas achamos válido implementá-lo. Ele marca até qual comando você deseja que seja executado os testes. Por exemplo:
       ```sh
