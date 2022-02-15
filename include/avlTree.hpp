@@ -54,6 +54,8 @@ class Avl {
     Node* insert(Node* pointer, DataConstReference _data, KeyConstReference _key, bool& wasInserted,
                  bool& needCheckBalance);
     // Choose Rotation
+    Node* switchBalanceToRight(Node* pointer, bool& needCheckBalance);
+    Node* switchBalanceToLeft(Node* pointer, bool& needCheckBalance);
     Node* chooseRightRotation(Node* pointer);
     Node* chooseLeftRotation(Node* pointer);
     // Rotation methods
@@ -82,8 +84,6 @@ class Avl {
     void toStringSorted(Node* pointer, std::stringstream& ss);
     void toStringHierarchical(const Node* node, bool isLeft, std::stringstream& ss, const std::string& prefix);
     void toStringHierarchical(Node* pointer, std::stringstream& ss);
-    void switchBalanceToLeft(Node* pointer, bool& needCheckBalance);
-    void switchBalanceToRight(Node* pointer, bool& needCheckBalance);
 
    public:
     //=== Public interface
