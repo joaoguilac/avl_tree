@@ -1,9 +1,9 @@
 ## 👨‍🎓 Identificação
 
 - Docente: Silvia Maria Diniz Monteiro Maia
-- Discente: André Freitas Silveira (freitasandre38@gmail.com)
-- Discente: João Guilherme Lopes Alves da Costa (joguicosta@hotmail.com)
-- Discente: Jonas de Oliveira Freire Filho (jonas.oliveira1402@outlook.com)
+- Discente: André Freitas Silveira (freitasandre38@gmail.com) <a href="https://github.com/andrefsilveira1">@andrefsilveira1</a>
+- Discente: João Guilherme Lopes Alves da Costa (joguicosta@hotmail.com) <a href="https://github.com/joaoguilac">@joaoguilac</a>
+- Discente: Jonas de Oliveira Freire Filho (jonas.oliveira1402@outlook.com) <a href="https://github.com/usrjonas">@usrjonas</a>
 
 ## ✅ Implementações
 
