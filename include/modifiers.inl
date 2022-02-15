@@ -2,6 +2,43 @@
 
 namespace tree {
 
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::switchBalanceToLeft(Node* pointer, bool& needCheckBalance){
+    switch (pointer->balance) {
+        case -1:
+            pointer->balance = 0;
+            needCheckBalance = false;
+            break;
+        case 0:
+            pointer->balance = 1;
+            break;
+        case 1:
+            pointer = chooseRightRotation(pointer);
+            needCheckBalance = false;
+            break;
+    }
+
+}
+
+template <typename DataType, typename KeyType>
+void Avl<DataType, KeyType>::switchBalanceToRight(Node* pointer, bool& needCheckBalance){
+    switch (pointer->balance) {
+        case 1:
+            pointer->balance = 0;
+            needCheckBalance = false;
+            break;
+        case 0:
+            pointer->balance = -1;
+            break;
+        case -1:
+            pointer = chooseLeftRotation(pointer);
+            needCheckBalance = false;
+            break;
+    }
+}
+
+
 template <typename DataType, typename KeyType>
 void Avl<DataType, KeyType>::insert(DataConstReference _data, KeyConstReference _key) {
     bool wasInserted = false;
@@ -31,19 +68,7 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
          * each node in the insertion path maintains the balance.
          */
         if (needCheckBalance) {
-            switch (pointer->balance) {
-                case -1:
-                    pointer->balance = 0;
-                    needCheckBalance = false;
-                    break;
-                case 0:
-                    pointer->balance = 1;
-                    break;
-                case 1:
-                    pointer = chooseRightRotation(pointer);
-                    needCheckBalance = false;
-                    break;
-            }
+            switchBalanceToLeft(pointer,needCheckBalance);
         }
     } else if (_key > pointer->key) {
         pointer->right = insert(pointer->right, _data, _key, wasInserted, needCheckBalance);
@@ -53,19 +78,7 @@ typename Avl<DataType, KeyType>::Node* Avl<DataType, KeyType>::insert(Node* poin
          * each node in the insertion path maintains the balance.
          */
         if (needCheckBalance) {
-            switch (pointer->balance) {
-                case 1:
-                    pointer->balance = 0;
-                    needCheckBalance = false;
-                    break;
-                case 0:
-                    pointer->balance = -1;
-                    break;
-                case -1:
-                    pointer = chooseLeftRotation(pointer);
-                    needCheckBalance = false;
-                    break;
-            }
+            switchBalanceToRight(pointer,needCheckBalance);
         }
     }
 
