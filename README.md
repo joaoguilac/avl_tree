@@ -25,7 +25,7 @@ Para compilar o projeto, entre na pasta do projeto e execute o comando de compil
 
 ```sh
 # Entrar na pasta raiz do projeto
-cd edb-ii-trabalho-2/
+cd edb2-avl_tree/
 
 # Compilar o projeto
 g++ -std=c++11 src/runTests.cpp -I include/ -o build/runTests
