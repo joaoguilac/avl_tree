@@ -39,7 +39,22 @@ Para execução do projeto devem ser passados dois arquivos como argumentos:
   Por exemplo: >51 54 68 57 26 34 85 65 25 84
 - O segundo, chamado de **arquivo de comandos**, contém uma sequência de operações (uma operação por linha) a serem realizadas pelo árvore AVL.
   O arquivo de comando poderá utilizar as operações a seguir:
-  `ENESIMO N POSICAO M MEDIANA CHEIA COMPLETA IMPRIMA IMPRIMA ORDENADO IMPRIMA HIERARQUICO REMOVA N INSIRA N BUSCA N QUIT`
+  
+  ```sh
+  ENESIMO N
+  POSICAO N
+  MEDIANA
+  CHEIA
+  COMPLETA
+  IMPRIMA
+  IMPRIMA ORDENADO
+  IMPRIMA HIERARQUICO
+  REMOVA N
+  INSIRA N
+  BUSCA N
+  QUIT
+  ```
+  
   Sendo 'N' a chave do elemento e 'M' um inteiro.
 
   Adicionamos mais duas formas de impressão da árvore: `IMPRIMA ORDENADO` e `IMPRIMA HIERARQUICO`. Esses métodos não foram requeridos pela docente.
