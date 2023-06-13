@@ -1,6 +1,6 @@
 # Implementação de uma Árvore AVL
 
-Neste projeto foi implementado uma estrutura de dados do tipo **Árvore Adel’son Vel’skii e Landis (AVL)**.
+Neste projeto foi implementado uma estrutura de dados do tipo **Árvore Adelson-Velsky e Landis (AVL)**.
 
 Além das três operações básicas de inserção, remoção e busca, a árvore deveria possuir mais seis métodos para tornar a estrutura mais completa.
 
